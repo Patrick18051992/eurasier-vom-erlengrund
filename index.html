@@ -1,191 +1,2099 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Eurasier vom Erlengrund</title>
-  <link rel="stylesheet" href="css/soon-index.css">
-  <script src="jquery-latest.min.js"></script>
-  <script>
-    function nextSlide() {
-      if (current_slide_index == (number_of_slides - 1)) {
-        current_slide_index = 0;
-      } else {
-        current_slide_index += 1;
-      }
-      slideshow.children().hide();
-      slideshow.children(':eq(' + current_slide_index + ')').fadeIn();
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Eurasier vom Erlengrund</title>
+    <link rel="icon" href="pics/tab_logo.png">
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/my_styles.css">
+    <script src="js/jquery-latest.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js"></script>
+    <!-- <script src='js/slideshow_functions.js'></script> -->
+    <script>
+        $(document).ready(function () {
+            $('#index').show();
 
-    function previousSlide() {
-      if (current_slide_index == 0) {
-        current_slide_index = (number_of_slides - 1);
-      }
-      // otherwise decrease by one
-      else {
-        current_slide_index -= 1;
-      }
-      slideshow.children().hide();
-      slideshow.children(':eq(' + current_slide_index + ')').fadeIn('slow');
-    }
+            // Navigation bar -> toggling events
+            // make sure if subtabs are open, they are closed when clicking again
+            $('.nav-appear').click(function (e) {
+                if (($(this).next('.nav-appear-content').attr('data')) == 'toggled') {
+                    $(this).next('.nav-appear-content').slideUp('slow').attr('data', '');
+                    return false;
+                }
+                $('.nav-appear-content').slideUp('slow').attr('data', '');
+                $(this).next('.nav-appear-content').toggle('slow').attr('data', 'toggled');
+            });
 
+            // Variables for scrolling
+            var navigation = $('.navbar-header');
+            var origOffsetY = navigation.offset().top;
+            var overlay = false;
+            // Make the navbar 'burger' stay at the top on mobile devices
+            function scroll() {
+                if ($(window).scrollTop() >= origOffsetY) {
+                    $('.navbar-header').addClass('sticky');
+                    // $('#content').addClass('navigation-padding');
+                } else if ($(window).scrollTop() <= origOffsetY) {
+                    $('.navbar-header').removeClass('sticky');
+                    // $('#content').removeClass('navigation-padding');
+                }
 
-    $(document).ready(function() {
-      // creates a container of all slides, finds the visible one and gives the index
-      current_slide_index = $('#slideshow-container').children(':visible').index();
-      number_of_slides = $('#slideshow-container').children().length;
-      slideshow = $('#slideshow-container');
-      // have the slideshow running from the beginning
-      var interval = setInterval(nextSlide, 3000);
-      var close = $('<button class="x">X</button>');
-      var next = $('<img src="pics/previous.png" id="previous" class="pic-control">');
-      var previous = $('<img src="pics/next.png" id="next" class="pic-control">');
+            }
+            // Call the function whenever scrolling is active
+            document.onscroll = scroll;
+            // for mobile devices
+            $('#menu-logo').click(function () {
+                $(window).scrollTop(0)
+            });
 
-
-      $('.slideshow-pics').click(function() {
-        $(this).parent().addClass('overlay-layer');
-        $(this).addClass('overlay-pic').removeClass('slideshow-pics').after(close).before(next).after(previous);
-        clearInterval(interval);
-
-        // $(document).keyup(function(e) {
-        //   if (e.keyCode === 37) {
-        //     $('.slides').removeClass('overlay-layer');
-        //     $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        //     $('.x').remove();
-        //
-        //     previousSlide();
-        //     $('.slideshow-pics').parent().addClass('overlay-layer');
-        //     $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before(next).after(previous);
-        //
-        //   }
-        // });
-        // $(document).keyup(function(e) {
-        //   if (e.keyCode === 39) {
-        //     $('.slides').removeClass('overlay-layer');
-        //     $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        //     $('.x').remove();
-        //
-        //     nextSlide();
-        //     $('.slideshow-pics').parent().addClass('overlay-layer');
-        //     $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before(next).after(previous);
-        //
-        //   }
-        // });
-
-        // $(document).keyup(function(e) {
-        //   if (e.keyCode === 27) {
-        //     $('.slides').removeClass('overlay-layer');
-        //     $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        //     $('.x').remove();
-        //     $('.pic-control').remove();
-        //     interval = setInterval(nextSlide, 3000);
-        //
-        //   }
-        // });
-
-      });
-      // Because the close button is genereated dynamically, this approach to access it has to be done
-      $('.slides').on('click', '.x', function() {
-        $('.slides').removeClass('overlay-layer');
-        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        $('.x').remove();
-        $('.pic-control').remove();
-        interval = setInterval(nextSlide, 3000);
-      });
+            // Slideshow
+            // Hide all except the first slide
+            // $('.slides:gt(0)').hide();
+            // creates a container of all slides, finds the visible one and gives the index
+            current_slide_index = $('.carousel-inner').children(':visible').index();
+            number_of_slides = ($('.carousel-inner').children().length - 2);
+            slideshow = $('.carousel-inner');
+            // have the slideshow running from the beginning calling the next slide function
+            // var interval = setInterval(nextSlide, 3000);
 
 
-      // include a flag that allows to only use the arrows whenin overlay mode
-      $('.slides').on('click', '#previous', function() {
-        $('.slides').removeClass('overlay-layer');
-        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        $('.x').remove();
+            // Overlay
+            $('.slideshow-pics').click(function (e) {
+                if (overlay == false) {
+                    $("#myCarousel").carousel("pause");
+                    current_slide = $(this);
+                    current_slide_container = $(this).parent();
+                    $('#overlay').css('display', 'flex'); // let it be centered
+                    $('#overlay-content').append(current_slide);
+                    $('.intro').addClass('intro-overlay')
+                    // clearInterval(interval);
+                    overlay = true;
+                }
 
-        previousSlide();
+            });
+            // Close the overlay clicking X
+            $('#close-overlay-bt').click(function (e) {
 
-        $('.slideshow-pics').parent().addClass('overlay-layer');
-        $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before(next).after(previous);
+                current_slide_container.prepend(current_slide);
+                $('#overlay').hide();
+                $('.intro').removeClass('intro-overlay')
+                // interval = setInterval(nextSlide, 3000);
+                // nextSlide();
+                overlay = false;
+                $("#myCarousel").carousel("cycle");
 
-      });
+            });
+            // vielleicht raus weil blauer rahmen bei chrome
+            $('#myCarousel').focus();
 
-      // $(document).keyup(function(e) {
-      //   if (e.keyCode === 37) {
-      //     previousSlide()
-      //   }
-      // });
+            // Close the overlay with escape
+            $(document).keyup(function (e) {
+                if (overlay == false) {
+                    if (e.keyCode == 37) {
+                        $("#myCarousel").carousel("prev");
+
+                    }
+                    // Press arrow right
+                    if (e.keyCode == 39) {
+                        $("#myCarousel").carousel("next");
+
+                    }
+                } else {
+                    if (e.keyCode == 27) { // esc keycode
+                        current_slide_container.prepend(current_slide);
+                        $('#overlay').hide();
+                        $('.intro').removeClass('intro-overlay')
+                        // interval = setInterval(nextSlide, 3000);
+                        overlay = false;
+                        $("#myCarousel").carousel("cycle");
+                    }
+                    // control the slideshow with the arrows
+                    // Press arrow left
+
+                }
 
 
+            });
+            //  NOT NEEDED AS TRIGGERED WHEN ADDRESS CHANGES (DEEP LINKING)
 
-      $('.slides').on('click', '#next', function() {
-        $('.slides').removeClass('overlay-layer');
-        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
-        $('.x').remove();
+            // nur den content laden lassen, der rest ist genauso
+            //  data yzu allen li und klasse bilden f´r die links
+            // richtiger tab activ plus parent falls subding
+            // $('.mytabs').click(function (e) {
+            // var clickedtab = $(this)
+            //     // $(this).children().address.value($(this).attr('href'));
+            //     $('.content-container').hide();
+            //     $('.mytabs').removeClass('active');
+            //     $('.nav-appear').removeClass('active');
+            //     $('.carousel').carousel(0);
+            // $(this).addClass('active');
+            // if ($(this).parent().prev().hasClass('nav-appear')) {
+            //     $(this).parent().prev().addClass('active')
+            // }
+            //     var chosen_tab = $(this).attr('data');
+            //     // alert(chosen_tab);
+            //     // chosen_tab = "'#index'";
+            //     $('#' + chosen_tab).show();
 
-        nextSlide();
-        $('.slideshow-pics').parent().addClass('overlay-layer');
-        $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before(next).after(previous);
-
-      });
-
-      // $(document).keyup(function(e) {
-      //   if (e.keyCode === 39) {
-      //     nextSlide();
-      //   }
-      // });
+            //     // maybe focus on the carousel to have the arrows enbaled
+            // })
 
 
+            // Deep linking -> use foward and backward buttons
+
+            // what to do when address changes (callback)
+            $.address.change(function (event) {
+                // tab is pressed open page and close navbar
+                $('.nav-appear-content').slideUp('slow').attr('data', '');
+
+                // reset all slideshows
+                $("#myCarousel").carousel(0);
+                // alert(event.parameter);
+                // alert(event.value);
+                // load the right page and activate the right tab
+                if (event.value.length > 1) {
+                    if (event.value.indexOf('1') !== -1 || event.value.indexOf('2') !== -1) {
+                        newstr = event.value.replace("/", ".");
+                    } else {
+                        newstr = event.value.replace("/", "#");
+                    }
+                    // alert(newstr);
+                    tabselect = event.value.substring(1);
+                    // alert(tabselect);
+                } else {
+                    tabselect = 'index';
+                    newstr = '#index';
+                }
+                // alert(newstr);
+                $('.content-container').hide();
+                $(newstr).show();
+
+                $('.mytabs').removeClass('active');
+                $('.nav-appear').removeClass('active');
+
+                $('.mytabs[data="' + tabselect + '"]').addClass('active');
+                if ($('.mytabs[data="' + tabselect + '"]').parent().prev().hasClass('nav-appear')) {
+                    $('.mytabs[data="' + tabselect + '"]').parent().prev().addClass('active')
+                }
+                $('.navbar-collapse').slideUp('slow');
+
+            });
+
+            $('#emailLink').on('click', function (event) {
+                event.preventDefault();
+                // alert("Huh");
+                var email = 'bettina.heinsch61@gmail.com';
+                var subject = $("#betreff").val();
+                var emailBody = $("#emailCont").val();
+                window.location = 'mailto:' + email + '?subject=' + subject + '&body=' + emailBody;
+            });
 
 
-    });
-  </script>
+        });
+    </script>
 </head>
 
 <body>
-  <header id="header">
-    <div class='left-col'>
-      <a target="_blank" href="http://www.der-eurasier.de/"><img src="pics/logo.jpg" class='pic' alt="Eurasierzuechter Logo"></a>
-    </div>
-    <div class="middle-col">
-      <h1 id='top-headline'>Eurasier vom Erlengrund</h1>
-    </div>
-    <div class="right-col">
-      <a target="_blank" href="http://www.eurasierfreunde-deutschland.de/"><img src="pics/efd_logo.png" alt="Eurasierfreunde Deutschland Logo" class="pic"></a>
-    </div>
-  </header>
+    <header class="container page-header" id="logo">
+        <div class="row">
+            <div class="hidden-xs col-sm-2">
+                <a target="_blank" href="http://www.der-eurasier.de/">
+                    <img class="img-responsive" src="pics/logo.jpg" width="90%" alt="Eurasierzuechter Logo">
+                </a>
+            </div>
+            <div class='col-xs-12 col-sm-8'>
+                <a href="" id='home-logo'>
+                    <h1 class="text-center" id='ueberschrift'>Eurasier vom Erlengrund</h1>
+                </a>
+            </div>
+            <div class="hidden-xs col-sm-2">
+                <a target="_blank" href="http://www.eurasierfreunde-deutschland.de/">
+                    <img class='img-responisve' src="pics/efd_logo.png" width='90%' alt="Eurasierfreunde Deutschland Logo" id='efd-logo'>
+                </a>
+            </div>
+        </div>
+    </header>
 
-  <h2 id="info-header">Bald ist es soweit!!!</h2>
+    <div class="container" id="mid-row">
+        <div class="row">
+            <!-- Navigation -->
 
-  <div id='slideshow-container'>
+            <div class="col-sm-2 my-sidebars">
+                <nav class="navbar navbar-inverse" role="navigation" data-spy="affix" data-offset-top="197">
 
-    <div class='slides'>
-      <img src="pics/stella-header.jpg" alt="Stella" class='slideshow-pics'>
-      <!-- <h3>Stella</h3> -->
+                    <!-- only seen on small screen, "burger" -> expand normal nav -->
+                    <div class="navbar-header navbar-inverse">
+                        <button id='menu-logo' type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav nav-tabs nav-stacked">
+                            <li class='mytabs active' data='index'>
+                                <a href='' class='selected'>Home</a>
+                            </li>
+
+                            <li class="nav-appear">
+                                <a>Meine Eurasier
+                                    <span class="caret"></span>
+                                </a>
+                            </li>
+                            <ul class="nav nav-tabs nav-stacked nav-appear-content">
+                                <li class="mytabs" data='stella'>
+                                    <a href='#stella'>Stella</a>
+                                </li>
+                                <li class="mytabs" data='awadi1'>
+                                    <a href='#awadi1'>Awadi</a>
+                                </li>
+                                <li class="mytabs" data='bayoko1'>
+                                    <a href='#bayoko1'>Bayoko</a>
+                                </li>
+                                <!-- <li class="mytabs" data='befunde'>
+                                    <a>Befunde</a>
+                                </li> -->
+                            </ul>
+
+                            <li class="mytabs" data='kaufen'>
+                                <a href='#kaufen'>Vor dem Kauf</a>
+                            </li>
+
+                            <li class="nav-appear">
+                                <a>A-Wurf
+                                    <span class="caret"></span>
+                                </a>
+                            </li>
+                            <ul class="nav nav-tabs nav-stacked nav-appear-content">
+                                <li class="mytabs" data='awadi2'>
+                                    <a href='#awadi2'>Awadi</a>
+                                </li>
+                                <li class="mytabs" data='amori'>
+                                    <a href='#amori'>Amori-Kwispel</a>
+                                </li>
+                                <li class="mytabs" data='avalon'>
+                                    <a href='#avalon'>Avalon</a>
+                                </li>
+                                <li class="mytabs" data='achiko'>
+                                    <a href='#achiko'>Achiko-Yakary</a>
+                                </li>
+                                <li class="mytabs" data='astika'>
+                                    <a href='#astika'>Astika</a>
+                                </li>
+                            </ul>
+
+                            <li class="nav-appear">
+                                <a>B-Wurf
+                                    <span class="caret"></span>
+                                </a>
+                            </li>
+                            <ul class="nav nav-tabs nav-stacked nav-appear-content">
+                                <li class="mytabs" data='bayoko2'>
+                                    <a href='#bayoko2'>Bayoko</a>
+                                </li>
+                                <li class="mytabs" data='baris'>
+                                    <a href='#baris'>Baris</a>
+                                </li>
+                                <li class="mytabs" data='bokar'>
+                                    <a href='#bokar'>Bokar</a>
+                                </li>
+                                <li class="mytabs" data='bajan'>
+                                    <a href='#bajan'>Bajan</a>
+                                </li>
+                            </ul>
+
+                            <!-- <li class="nav-appear">
+                                <a>Wurf-Treffen
+                                    <span class="caret"></span>
+                                </a>
+                            </li>
+                            <ul class="nav nav-tabs nav-stacked nav-appear-content">
+                                <li class="mytabs" data='wurftreffen-a'>
+                                    <a href='#wurftreffen-a'>A-Wurf</a>
+                                </li>
+                                <li class="mytabs" data='wurftreffen-b'>
+                                    <a href='#wurftreffen-b'>B-Wurf</a>
+                                </li>
+
+                            </ul> -->
+                            <li class="mytabs" data='links'>
+                                <a href='#links'>Links</a>
+                            </li>
+                            <li class="mytabs" data='kontakt'>
+                                <a href='#kontakt'>Kontakt</a>
+                            </li>
+
+                        </ul>
+
+
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </nav>
+
+            </div>
+            <!--/end navigation div-->
+
+            <!-- INDEX  PAGE-->
+            <div class="col-xs-12 col-sm-8 content-container" id='index'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+                <div class="hidden-md hidden-lg text-center" id='mobile-subheadline'>
+
+                    <h3>
+                        Hallo, das ist unsere mobile Webseite. Hier stellen wir 3 uns einmal vor:
+                    </h3>
+
+                </div>
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval='3000'>
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                        <li data-target="#myCarousel" data-slide-to="3"></li>
+                        <li data-target="#myCarousel" data-slide-to="4"></li>
+                        <li data-target="#myCarousel" data-slide-to="5"></li>
+                        <li data-target="#myCarousel" data-slide-to="6"></li>
+                        <li data-target="#myCarousel" data-slide-to="7"></li>
+                        <li data-target="#myCarousel" data-slide-to="8"></li>
+                        <li data-target="#myCarousel" data-slide-to="9"></li>
+                        <li data-target="#myCarousel" data-slide-to="10"></li>
+                        <!-- <li data-target="#myCarousel" data-slide-to="11"></li> -->
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class="ver-pics slideshow-pics">
+                                <img src="pics/Startseite/ver/eisenbahner2.jpeg" class="img-responsive" alt="Awadi, Stella, Bayoko (v.l.)">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Stella, Bayoko (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/P1040246.JPG" class="img-responsive" alt="Awadi, Bayoko, Stella (v.l.)">
+
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Bayoko, Stella (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/P1040131.JPG" class="img-responsive" alt="Awadi, Bayoko, Stella (v.l.)">
+
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Bayoko, Stella (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/P1040057.JPG" class="img-responsive" alt="Stella, Bayoko, Stella (v.l.)">
+
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Stella, Bayoko, Stella (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Startseite/hor/WhatsApp Image 2017-12-12 at 22.38.50.jpeg" class="img-responsive" alt="Stella">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Stella, Awadi, Bayoko (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ver-pics slideshow-pics">
+                                <img src="pics/Startseite/ver/WhatsApp Image 2017-12-12 at 22.38.49.jpeg" class="img-responsive" alt="Bayoko">
+
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Stella,Bayoko (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/WhatsApp Image 2017-12-12 at 22.38.51 (1).jpeg" class="img-responsive" alt="Bayoko">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Stella,Bayoko (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/WhatsApp Image 2017-12-12 at 22.38.51 (2).jpeg" class="img-responsive" alt="Bayoko">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Stella, Bayoko, Awadi (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/WhatsApp Image 2017-12-12 at 22.38.51.jpeg" class="img-responsive" alt="Bayoko">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Bayoko, Stella (v.l.)</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Startseite/hor/WhatsApp Image 2017-12-12 at 22.38.52.jpeg" class="img-responsive" alt="Bayoko">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Bayoko, Awadi, Stella (v.l.)</h3>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="ver-pics slideshow-pics">
+                                <img src="pics/Startseite/ver/bank.jpeg" class="img-responsive" alt="Awadi, Stella, Bayoko (v.l.)">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi, Stella, Bayoko (v.l.)</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Left and right controls -->
+                    <!-- <a class="left carousel-control" href="#myCarousel"> -->
+                    <!-- <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> -->
+                    <!-- <span class="sr-only">Previous</span> -->
+                    <!-- </a> -->
+                    <!-- <a class="right carousel-control" href="#myCarousel"> -->
+                    <!-- <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> -->
+                    <!-- <span class="sr-only">Next</span> -->
+                    <!-- </a> -->
+
+                </div>
+            </div>
+            <!-- </div> -->
+            <!-- STELLA PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='stella'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Stella</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel1" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li id="0" data-target="#myCarousel1" data-slide-to="0" class="active"></li>
+                        <li id="1" data-target="#myCarousel1" data-slide-to="1"></li>
+                        <li id="2" data-target="#myCarousel1" data-slide-to="2"></li>
+                        <li id="3" data-target="#myCarousel1" data-slide-to="3"></li>
+                        <li id="4" data-target="#myCarousel1" data-slide-to="4"></li>
+                        <li id="5" data-target="#myCarousel1" data-slide-to="5"></li>
+                        <li id="6" data-target="#myCarousel1" data-slide-to="6"></li>
+                        <li id="7" data-target="#myCarousel1" data-slide-to="7"></li>
+                        <li id="8" data-target="#myCarousel1" data-slide-to="8"></li>
+                        <li id="9" data-target="#myCarousel1" data-slide-to="9"></li>
+                        <li id="10" data-target="#myCarousel1" data-slide-to="10"></li>
+                        <li id="11" data-target="#myCarousel1" data-slide-to="11"></li>
+                        <li id="12" data-target="#myCarousel1" data-slide-to="12"></li>
+                        <li id="13" data-target="#myCarousel1" data-slide-to="13"></li>
+                        <li id="14" data-target="#myCarousel1" data-slide-to="14"></li>
+                        <li id="15" data-target="#myCarousel1" data-slide-to="15"></li>
+                        <li id="16" data-target="#myCarousel1" data-slide-to="16"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics intro'>
+
+                                <!-- <div id='intro'> -->
+                                <h4 class="section-header">Stella kommt aus dem Lateinischen und bedeutet "Stern"</h4>
+
+                                Ich kam als Amaya in der Zuchtstätte vom Elseneck in Birkenwerder, nördlich von Berlin zur Welt. Meine Familie gab mir den
+                                Rufnamen Stella, da sie meinten, meine Augen hätten sie wie Sterne angestrahlt, als sie mich
+                                sahen und mit 10 Wochen abholten. Mein neues aufregendes Leben in Oberfranken sollte beginnen.Mich
+                                erwartete ein großer Garten mit Spiel- und Ruhemöglichkeiten. Meine Familie ist immer für
+                                mich da, ich bin ein vollständig integriertes Familienmitglied und darf fast überall dabei
+                                sein. Ich bin eine freundliche, stets gut gelaunte aber zurück haltende Hündin. Meine Familie
+                                sagt deshalb, ich würde doch täglich einen Clown frühstücken!!!!! Ab der 12. Lebenswoche
+                                bis zu einem Alter von 2,5 Jahren besuchte ich eine Hundeschule, wo ich auch immer gerne
+                                hinging. Mein Frauchen begann mit mir eine Ausbildung zur Therapiehündin. Im Dez. 2011 legte
+                                ich meine Begleithundeprüfung und die Eingangsprüfung ab. Eine vollständige Ausbildung zur
+                                Therapiehündin scheiterte leider an meinem Eurasier typischen Verhalten. Ich bin sehr sensibel,
+                                zurück haltend, nicht sofort auf Kuschelkurs mit Fremden außerdem bin ich ausgewichen wenn
+                                jemand mit Rollator oder Rollstuhl an mir vorbei wollte. Für mein Frauchen positive Eigenschaften,
+                                was die Ausbilderin und Prüfer jedoch anders sahen. Aber auch ohne Prüfungen bin ich ein
+                                gern gesehener Gast in den Seniorenheimen und Kindergärten, denn mit der Zeit lasse ich mich
+                                auch streicheln und laufe mit den Senioren und Kindern! Besuche in Großstädten macht mir
+                                als Landmädel auch keine Angst und Probleme. Seit 2012 besitze ich die Zuchttauglichkeit
+                                und schenkte meiner Familie zwei Würfe, von denen jeweils eine Tochter bei mir bleiben durfte
+                                !!! Lest aber selber unter Awadi & Bayoko.
+                                <br> Ich würde sagen „ wir sind ein gutes Trio“geworden, was seine Familie fast überall hin begleiten
+                                darf, wir lieben Auto fahren und jede Art von Ausflügen. Haus und Garten werden von uns bewacht.
+                                Unser Frauchen lassen wir nicht aus den Augen !!!!!!
+                                <!-- </div> -->
+
+                            </div>
+
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/stella_angekommen.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/11.8.2016 Stella.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Stella/ver/16.10.2011 Stella.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/6.9.2011 Stella re. _ Schwester Ara-Emma.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/stella-header.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella//hor/9.11.2011 Stella.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/Amaya-STELLA vom Elseneck (2).JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Stella/ver/12.6.2011 um 12.22h meine Beute eine Maus2.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Stella/quad/Amaya-Stella vom Elseneck.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/Awadi _ Stella Aug.2014.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Stella/quad/6.9.2011 Stella mit Luzie.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Stella/ver/Stella 4.7.2014.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/Stella 6.12.2010.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/CIMG2622.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Stella/hor/stella_pasci.jpg" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div>
+                        <!-- <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Stella/ver/Stella7.6.2016.JPG" class='img-responsive' alt="Stella auf der Bank">
+                            </div>
+                        </div> -->
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Stella/hor/CIMG2684.JPG" class="img-responsive" alt="Stella auf der Wiese">
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="left carousel-control" href="#myCarousel1" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel1" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AWADI PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container awadi1 awadi2" id='awadi'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Awadi</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel2" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li id="0" data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel2" data-slide-to="1"></li>
+                        <li data-target="#myCarousel2" data-slide-to="2"></li>
+                        <li data-target="#myCarousel2" data-slide-to="3"></li>
+                        <li data-target="#myCarousel2" data-slide-to="4"></li>
+                        <li data-target="#myCarousel2" data-slide-to="5"></li>
+                        <li data-target="#myCarousel2" data-slide-to="6"></li>
+                        <li data-target="#myCarousel2" data-slide-to="7"></li>
+                        <li data-target="#myCarousel2" data-slide-to="8"></li>
+                        <li data-target="#myCarousel2" data-slide-to="9"></li>
+                        <li data-target="#myCarousel2" data-slide-to="10"></li>
+                        <li data-target="#myCarousel2" data-slide-to="11"></li>
+                        <li data-target="#myCarousel2" data-slide-to="12"></li>
+                        <li data-target="#myCarousel2" data-slide-to="13"></li>
+                        <li data-target="#myCarousel2" data-slide-to="14"></li>
+                        <li data-target="#myCarousel2" data-slide-to="15"></li>
+                        <li data-target="#myCarousel2" data-slide-to="16"></li>
+                        <li data-target="#myCarousel2" data-slide-to="17"></li>
+                        <li data-target="#myCarousel2" data-slide-to="18"></li>
+                        <li data-target="#myCarousel2" data-slide-to="19"></li>
+                        <li data-target="#myCarousel2" data-slide-to="20"></li>
+                        <li id="21" data-target="#myCarousel2" data-slide-to="21"></li>
+                        <li id="22" data-target="#myCarousel2" data-slide-to="22"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics intro'>
+
+                                <!-- <div id='intro'> -->
+                                <h4 class="section-header">Awadi kommt aus dem Afrikanischen und bedeutet
+                                    <br> „die Erstgeborene, das Geschenk“</h4>
+
+                                Bei der Wurfplanung war schon klar, das eine Hündin bei uns bleiben würde! Es war nur eine Hündin im Wurf und vier Rüden,
+                                also stand vom ersten Tag an fest Awadi ist unsere Hündin. Sie setzte sich gut gegen ihre
+                                Brüder durch und entwickelte sich zu einer etwas wilden, aufgeweckten und freundlichen Hündin.
+                                In der Hundeschule die wir mit ihr ab der 12 Woche besuchten, sagte man uns , sie sei eine
+                                sehr Dominante und würde Stella wohl sehr bald die Rudelführung abnehmen. Von Dominanz ist
+                                bei ihr nichts zu merken, sie war ein wilder, lebhafter Welpe ging über Sofa & Eckbank!!!
+                                <br> Das änderte sich mit 2 Jahren, sie ist weiterhin eine sehr freundliche Hündin, die sehr
+                                Menschen bezogen ist, selbst Kontakt aufnimmt, zu fremden Menschen geht und sich streicheln
+                                lässt. Auch mit ruhigen Kindern hat sie keine Probleme. Awadi & Stella bilden ein gutes Team
+                                und besuchen gemeinsam Senioren Einrichtungen und Kindergärten. Mit anderen Hunden hat sie
+                                meistens auch keine Probleme. Seit 2015 besitzt sie die Zuchtzulassung.
+                                <br> Sie zeigte sich als ruhige, gelassene, freundliche große Schwester, mit der die Welpen von
+                                Stella ihrem zweiten Wurf viel spielten !!!! Sie geht jedem Streit aus dem Weg und bildet
+                                somit den ruhigen Pol im Rudel, bellt nur bei Grund. Awadi hat sich zu meinem Seelenhund
+                                entwickelt.
+                                <!-- </div> -->
+
+                            </div>
+
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Awadi/ver/awadi-header.jpg" class='img-responsive' alt="Awadi">
+                            </div>
+                            <div class="hidden-xs hidden-sm carousel-caption">
+                                <h3>Awadi</h3>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ver-pics slideshow-pics">
+                                <img src="pics/Awadi/ver/P1010406.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Awadi/hor/image(220).jpeg" class='img-responsive' alt="Awadi">
+                            </div>
+                            <!-- <div class="hidden-xs hidden-sm carousel-caption">
+                                        <h3>Awadi</h3>
+                                    </div> -->
+
+
+                        </div>
+
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/CIMG2830.JPG" class="img-responsive" alt="Awadi">
+
+                            </div>
+                            <!-- <div class="hidden-xs hidden-sm carousel-caption">
+                                        <h3>Bayoko</h3>
+                                    </div> -->
+                        </div>
+
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_0054+.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_0232.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_0321.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/img_0463.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_0753.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_0934.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/IMG_1044.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1000026.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1010010.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1010057.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1010330.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1010545.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1010740.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="sup-ver-pics slideshow-pics">
+                                <img src="pics/Awadi/ver/IMG_0989.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/P1020624.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Awadi/hor/PICT0328.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="quad-pics slideshow-pics">
+                                <img src="pics/Awadi/quad/P1010123+.jpg" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="sup-ver-pics slideshow-pics">
+                                <img src="pics/Awadi/ver/IMG_0898.JPG" class="img-responsive" alt="Awadi">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="left carousel-control" href="#myCarousel2" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel2" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bayoko PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container bayoko1 bayoko2" id='bayoko'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Bayoko</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel3" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li id="0" data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel3" data-slide-to="1"></li>
+                        <li data-target="#myCarousel3" data-slide-to="2"></li>
+                        <li data-target="#myCarousel3" data-slide-to="3"></li>
+                        <li data-target="#myCarousel3" data-slide-to="4"></li>
+                        <li data-target="#myCarousel3" data-slide-to="5"></li>
+                        <li data-target="#myCarousel3" data-slide-to="6"></li>
+                        <li data-target="#myCarousel3" data-slide-to="7"></li>
+                        <li data-target="#myCarousel3" data-slide-to="8"></li>
+                        <li data-target="#myCarousel3" data-slide-to="9"></li>
+                        <li data-target="#myCarousel3" data-slide-to="10"></li>
+                        <li data-target="#myCarousel3" data-slide-to="11"></li>
+                        <li data-target="#myCarousel3" data-slide-to="12"></li>
+                        <li data-target="#myCarousel3" data-slide-to="13"></li>
+                        <li data-target="#myCarousel3" data-slide-to="14"></li>
+                        <li data-target="#myCarousel3" data-slide-to="15"></li>
+                        <li data-target="#myCarousel3" data-slide-to="16"></li>
+                        <li data-target="#myCarousel3" data-slide-to="17"></li>
+                        <li data-target="#myCarousel3" data-slide-to="18"></li>
+                        <li data-target="#myCarousel3" data-slide-to="19"></li>
+                        <li data-target="#myCarousel3" data-slide-to="20"></li>
+                        <li data-target="#myCarousel3" data-slide-to="21"></li>
+                        <!-- <li data-target="#myCarousel3" data-slide-to="22"></li> -->
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics intro'>
+
+                                <!-- <div id='intro'> -->
+                                <h4 class="section-header">Bayoko bedeutet „bleib immer bei mir“</h4>
+
+                                Bayoko ist leider die einzige überlebende Hündin aus Stella ihrem B-Wurf. Wir mussten 4 Welpen über die Regenbogenbrücke
+                                gehen lassen. Bayoko hatte eigentlich als Bella ihre neue Familie gefunden. Als es Stella
+                                nach Abgabe der Rüden sehr schlecht ging, beschlossen wir, zum wohlergehen unserer Zuchthündin,
+                                ihr ihre Tochter zu lassen, Wegen der Namens Ähnlichkeit wurde aus Bella schließlich Bayoko!!!!
+                                <br> Sie ist ein kleiner Wirbelwind, ständig in Bewegung und zu Scherzen aufgelegt! Eine freundliche
+                                Hündin, die ihre Schwester Awadi als gutes Vorbild hat und auch Kontakt zu fremden aufnimmt
+                                und sich streicheln lässt. Sie fordert immer zum Spielen auf und bildet sich Zeitweise ein,
+                                sie sei Rudelführerin!!! Wenn sie es gar zu doll treibt, wird sie von Stella & Awadi in ihre
+                                Schranken gewiesen, was sie dann auch akzeptiert und beschwichtigend um die beiden „Großen“
+                                schleicht!!! Im Rudel ist sie anderen Hunden gegenüber etwas vorlaut, alleine eher zurück
+                                haltend. Sie ist eine kuschel Hündin, bewacht aber genau wie ihre Mama und Schwester das
+                                Grundstück und die Familie. Mit viel Freude nimmt sie an den Besuchen in den Einrichtungen
+                                teil.
+                                <br> Die drei Mädels bilden ein harmonisches Team und es wurde kein Moment bereut , Bayoko im
+                                Rudel behalten zu haben.
+                                <!-- </div> -->
+
+                            </div>
+
+
+                        </div>
+                        <!-- <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bayoko/ver/P1050273.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div> -->
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Bayoko/hor/12112857_1007231352692941_1015464871_o.jpg" class="img-responsive" alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/IMG_7522.JPG8.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1020844.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1020920.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1020995.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1030168.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1030221.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/image1.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1030602.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040023.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040048.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040163.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040199.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040211.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040229.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bayoko/ver/P1040507.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040295.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040606.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1040776.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1050114.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bayoko/hor/P1050284.JPG" class='img-responsive' alt="Bayoko">
+                            </div>
+                        </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel3" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel3" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Vor dem Kauf PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='kaufen'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Überlegungen vor dem Kauf</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel11" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li id="1" data-target="#myCarousel11" data-slide-to="0" class="active"></li>
+                        <li id="2" data-target="#myCarousel11" data-slide-to="1"></li>
+                        <li id="3" data-target="#myCarousel11" data-slide-to="2"></li>
+                        <!-- <li data-target="#myCarousel2" data-slide-to="3"></li> -->
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics intro'>
+
+
+                                Ein seriöser Züchter wird für seine Welpen immer versuchen, das bestmögliche Zuhause zu finden und über die Welpenabgabe
+                                hinaus Kontakt zum neuen Besitzer zu halten, ihn vielleicht auch mal besuchen! Ob es nun
+                                um Fragen, Probleme, die Entwicklung der Welpen oder sonstige Dinge geht. Regelmäßige Wurftreffen
+                                sind geplant, an denen sich die Besitzer austauschen können und die Geschwister sich wiedersehen.
+                                <br> Kennen Sie die Rasse Eurasier und passt sie zu Ihnen? Ein Eurasier ist ein vollwertiges
+                                Familienmitglied, das viel Fürsorge benötigt und immer dort sein möchte, wo seine Menschen
+                                sind. Ein Hund mit eigenem Charakter! Sie versuchen schon mal ihren eigenen Kopf durch zu
+                                setzen, mit Gewalt erreicht man bei diesen Hunden jedoch gar nichts.
+                                <br> Wenn Sie im Vorfeld schon bestimmte Leistungen erhoffen, könnten Sie von einem Eurasier
+                                enttäuscht werden, denn sie sind Individualisten, von denen man nicht immer erwarten darf,
+                                dass sie auf Knopfdruck funktionieren!!!!
+                                <!-- </div> -->
+
+                            </div>
+
+                        </div>
+
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <h4>Fragen die Sie sich vor dem Kauf stellen und ehrlich beantworten sollten:</h4>
+                                <ul>
+                                    <li>
+                                        Bin ich ca. 10-16 Jahre bereit für einen Eurasier da zu sein, ihn zu erziehen, zu beschäftigen und mit Respekt zu behandeln?
+
+                                    </li>
+                                    <li>
+                                        Hab ich die Zeit, täglich 2-3 Stunden bei jedem Wetter, auch an Sonn- und Feiertagen, spazieren zu gehen und den Hund körperlich
+                                        wie auch geistig fit zu halten? Ein Garten wäre für zusätzlichen Auslauf schön, ersetzt
+                                        aber die Spaziergänge nicht!
+
+                                    </li>
+                                    <li>
+                                        Bin ich körperlich noch fit für einen Welpen und Junghund?
+
+                                    </li>
+                                    <li>
+                                        Bin ich bereit meinen Urlaub auf den Hund abzustimmen, das heißt auf Flugreisen zu verzichten?
+
+                                    </li>
+                                    <li>
+                                        Habe ich eine Unterbringungsmöglichkeit im Krankheitsfall?
+                                    </li>
+                                    <li>
+                                        Habe ich das Einverständnis von meinem Vermieter?
+                                    </li>
+                                    <li>
+                                        Sind alle Familienmitglieder mit der Anschaffung eines Hundes einverstanden und bestehen KEINE Allergien?
+                                    </li>
+                                    <li>
+                                        Sind Sie zum Besuch einer Welpengruppe und Hundeschule bereit?
+                                    </li>
+                                    <li>
+                                        Hat Ihr Eurasier Kontakt zu Artgenossen?
+                                    </li>
+                                    <li>
+                                        Haben sie weitere Haustiere die hundeverträglich sind?
+                                    </li>
+                                    <li>
+                                        Ist eine finanzielle Rücklage vorhanden, falls doch einmal größere Tierarztkosten auftreten sollten, sowie Kosten für Hundesteuer,
+                                        Haftpflichtversicherung und Impfungen die jährlich anfallen, hochwertiges Futter
+                                        und Hundeschule?
+                                    </li>
+                                    <li>
+                                        Sind Sie bereit dazu, den Hund, auch wenn er alt und krank ist, in der Familie zu versorgen und zu pflegen?
+                                    </li>
+                                </ul>
+                                Ein Hund ist keine Maschine, es kann immer mal ein Malheur auf den Teppich gehen oder etwas als Spielzeug benutzt werden,
+                                was nicht für Ihn bestimmt war!!! Eine Zwingerhaltung, sowie übermäßig langes alleine lassen
+                                sind unmöglich! Wenn sie auch aussehen wie Teddybären, als Spielzeug sind sie nicht zu missbrauchen!!!
+
+                            </div>
+
+                        </div>
+
+                        <div class="item">
+                            <div class="hor-pics slideshow-pics">
+                                <img src="pics/Stella/hor/CIMG2684.JPG" class="img-responsive" alt="10 Bitten des Hundes">
+
+                            </div>
+                            <!-- <div class="hidden-xs hidden-sm carousel-caption">
+                                  <h3>Bayoko</h3>
+                                </div> -->
+                        </div>
+
+
+                    </div>
+
+                    <!-- Left and right controls -->
+                    <a class="left carousel-control" href="#myCarousel11" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel11" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            <!-- Amori PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='amori'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Amori-Kwispel</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel4" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li id="0" data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel4" data-slide-to="1"></li>
+                        <li data-target="#myCarousel4" data-slide-to="2"></li>
+                        <li data-target="#myCarousel4" data-slide-to="3"></li>
+                        <li data-target="#myCarousel4" data-slide-to="4"></li>
+                        <li data-target="#myCarousel4" data-slide-to="5"></li>
+                        <li data-target="#myCarousel4" data-slide-to="6"></li>
+                        <li data-target="#myCarousel4" data-slide-to="7"></li>
+                        <li data-target="#myCarousel4" data-slide-to="8"></li>
+                        <li data-target="#myCarousel4" data-slide-to="9"></li>
+                        <li data-target="#myCarousel4" data-slide-to="10"></li>
+                        <li data-target="#myCarousel4" data-slide-to="11"></li>
+                        <li data-target="#myCarousel4" data-slide-to="12"></li>
+                        <li data-target="#myCarousel4" data-slide-to="13"></li>
+                        <li data-target="#myCarousel4" data-slide-to="14"></li>
+                        <li data-target="#myCarousel4" data-slide-to="15"></li>
+                        <li data-target="#myCarousel4" data-slide-to="16"></li>
+                        <li data-target="#myCarousel4" data-slide-to="17"></li>
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Amori/quad/image(379).jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/image8.jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0053+.jpg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0260.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0391.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0537.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0768.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0821.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0835.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/IMG_0867.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Amori/hor/PICT0320.JPG" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Amori/quad/image11.jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image(1).jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image(23).jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image(73).jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image(499).jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image2.jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Amori/ver/image4.jpeg" class='img-responsive' alt="Amori-Kwispel">
+                            </div>
+                        </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel4" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel4" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+            <!-- Aavalon PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='avalon'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Avalon</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel5" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel5" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel5" data-slide-to="2"></li>
+                        <li data-target="#myCarousel5" data-slide-to="1"></li>
+                        <li data-target="#myCarousel5" data-slide-to="3"></li>
+                        <li data-target="#myCarousel5" data-slide-to="4"></li>
+                        <li data-target="#myCarousel5" data-slide-to="5"></li>
+                        <li data-target="#myCarousel5" data-slide-to="6"></li>
+                        <!-- <li data-target="#myCarousel5" data-slide-to="7"></li> -->
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <!-- unbekanntes foto -->
+                        <!-- <div class="item">
+                        <div class='hor-pics slideshow-pics'>
+                            <img src="pics/Avalon/hor/image(5).jpeg" class='img-responsive' alt="Avalon">
+                        </div>
+                    </div> -->
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Avalon/hor/IMG_0065.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Avalon/hor/IMG_0158.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Avalon/hor/IMG_0520.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Avalon/hor/IMG_0806.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Avalon/hor/PICT0325.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Avalon/ver/IMG_0002.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Avalon/ver/IMG_0136.JPG" class='img-responsive' alt="Avalon">
+                            </div>
+                        </div>
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel5" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel5" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Achiko PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='achiko'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Achiko-Yakari</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel6" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel6" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel6" data-slide-to="1"></li>
+                        <li data-target="#myCarousel6" data-slide-to="2"></li>
+                        <li data-target="#myCarousel6" data-slide-to="3"></li>
+                        <li data-target="#myCarousel6" data-slide-to="4"></li>
+                        <li data-target="#myCarousel6" data-slide-to="5"></li>
+                        <li data-target="#myCarousel6" data-slide-to="6"></li>
+                        <li data-target="#myCarousel6" data-slide-to="7"></li>
+                        <li data-target="#myCarousel6" data-slide-to="8"></li>
+                        <li data-target="#myCarousel6" data-slide-to="9"></li>
+                        <li data-target="#myCarousel6" data-slide-to="10"></li>
+                        <li data-target="#myCarousel6" data-slide-to="11"></li>
+                        <li data-target="#myCarousel6" data-slide-to="12"></li>
+                        <li data-target="#myCarousel6" data-slide-to="13"></li>
+                        <li data-target="#myCarousel6" data-slide-to="14"></li>
+                        <li data-target="#myCarousel6" data-slide-to="15"></li>
+                        <li data-target="#myCarousel6" data-slide-to="16"></li>
+                        <li data-target="#myCarousel6" data-slide-to="17"></li>
+
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0153.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Achiko/quad/05_IMG_20150930_213828.jpg" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/CIMG2754.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/CIMG2783.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0071.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0112.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0178.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0196.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0326.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0352.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0387.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0438.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/IMG_0951.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Achiko/hor/PICT0314.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Achiko/ver/IMG_0632.JPG" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Achiko/ver/IMG_20141016_191051.jpg" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Achiko/ver/IMG_20141210_090243.jpg" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Achiko/ver/03_IMG_20150804_110727.jpg" class='img-responsive' alt="Achiko">
+                            </div>
+                        </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel6" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel6" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+            <!-- Astika PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='astika'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Astika</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel7" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel7" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel7" data-slide-to="2"></li>
+                        <li data-target="#myCarousel7" data-slide-to="1"></li>
+                        <li data-target="#myCarousel7" data-slide-to="3"></li>
+                        <li data-target="#myCarousel7" data-slide-to="4"></li>
+                        <li data-target="#myCarousel7" data-slide-to="5"></li>
+                        <li data-target="#myCarousel7" data-slide-to="6"></li>
+                        <li data-target="#myCarousel7" data-slide-to="7"></li>
+                        <li data-target="#myCarousel7" data-slide-to="8"></li>
+
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/2014-02-19 10.51.34.jpg" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/IMG_0059.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/IMG_0184.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/IMG_0246.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/IMG_0717.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/IMG_0915.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Astika/hor/PICT0316.JPG" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Astika/ver/04_20150318_091026.jpg" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Astika/ver/IMG_5033.jpg" class='img-responsive' alt="Astika">
+                            </div>
+                        </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel7" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel7" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+            <!-- Baris PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='baris'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Baris</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel8" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel8" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel8" data-slide-to="1"></li>
+                        <li data-target="#myCarousel8" data-slide-to="2"></li>
+                        <li data-target="#myCarousel8" data-slide-to="3"></li>
+                        <li data-target="#myCarousel8" data-slide-to="4"></li>
+                        <li data-target="#myCarousel8" data-slide-to="5"></li>
+                        <li data-target="#myCarousel8" data-slide-to="6"></li>
+                        <li data-target="#myCarousel8" data-slide-to="7"></li>
+                        <li data-target="#myCarousel8" data-slide-to="8"></li>
+                        <li data-target="#myCarousel8" data-slide-to="9"></li>
+                        <li data-target="#myCarousel8" data-slide-to="10"></li>
+                        <li data-target="#myCarousel8" data-slide-to="11"></li>
+                        <li data-target="#myCarousel8" data-slide-to="12"></li>
+
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/01_IMG_6628.JPG8.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/13177964_1145822472167161_7788050121016181600_n.jpg" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/15_IMG_6672.JPG8.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/IMG_7639.JPG8.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1020820.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1020927.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1030007.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1030162.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1030286.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1030710.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Baris/hor/P1030847.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Baris/ver/18192304_1409548972435424_2274386000389739603_o.jpg" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Baris/ver/19_IMG_6857.JPG8.JPG" class='img-responsive' alt="Baris">
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel8" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel8" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Bookar PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='bokar'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Bokar</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel9" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel9" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel9" data-slide-to="1"></li>
+                        <li data-target="#myCarousel9" data-slide-to="2"></li>
+                        <li data-target="#myCarousel9" data-slide-to="3"></li>
+                        <li data-target="#myCarousel9" data-slide-to="4"></li>
+                        <li data-target="#myCarousel9" data-slide-to="5"></li>
+                        <li data-target="#myCarousel9" data-slide-to="6"></li>
+                        <li data-target="#myCarousel9" data-slide-to="7"></li>
+                        <li data-target="#myCarousel9" data-slide-to="8"></li>
+                        <li data-target="#myCarousel9" data-slide-to="9"></li>
+                        <li data-target="#myCarousel9" data-slide-to="10"></li>
+                        <li data-target="#myCarousel9" data-slide-to="11"></li>
+                        <li data-target="#myCarousel9" data-slide-to="12"></li>
+                        <li data-target="#myCarousel9" data-slide-to="13"></li>
+                        <li data-target="#myCarousel9" data-slide-to="14"></li>
+                        <li data-target="#myCarousel9" data-slide-to="15"></li>
+                        <li data-target="#myCarousel9" data-slide-to="16"></li>
+                        <li data-target="#myCarousel9" data-slide-to="17"></li>
+                        <!-- <li data-target="#myCarousel9" data-slide-to="18"></li> -->
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Bokar/quad/image2 (21).JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/16178685_210755226055324_2479213296812776762_o (1).jpg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/image1(2).JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/image10.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/image3 (7).JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/image5.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/image7.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/P1020834.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/P1020929.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/P1030051.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bokar/hor/P1030165.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='quad-pics slideshow-pics'>
+                                <img src="pics/Bokar/quad/01_image1 (4).JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/image1(1).JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/image11.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/image3.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/image6.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/image4.jpeg" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bokar/ver/P1030393.JPG" class='img-responsive' alt="Bokar">
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel9" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel9" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+            <!-- Bajan PAGE -->
+            <div class="col-xs-12 col-sm-8 content-container" id='bajan'>
+                <!-- Subheadline for mobile devices to fill empty space -->
+
+
+                <h2 id="intro-header">Bajan</h2>
+
+
+
+                <!-- <div id='slideshow-container'> -->
+
+                <div id="myCarousel10" tabindex="0" class="carousel slide" data-ride="carousel" data-interval='false'>
+                    <!-- Indicators -->
+                    <!-- get rif of them -->
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel10" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel10" data-slide-to="1"></li>
+                        <li data-target="#myCarousel10" data-slide-to="2"></li>
+                        <li data-target="#myCarousel10" data-slide-to="3"></li>
+                        <li data-target="#myCarousel10" data-slide-to="4"></li>
+                        <li data-target="#myCarousel10" data-slide-to="5"></li>
+                        <li data-target="#myCarousel10" data-slide-to="6"></li>
+                        <li data-target="#myCarousel10" data-slide-to="7"></li>
+                        <li data-target="#myCarousel10" data-slide-to="8"></li>
+                        <li data-target="#myCarousel10" data-slide-to="9"></li>
+                        <li data-target="#myCarousel10" data-slide-to="10"></li>
+                        <li data-target="#myCarousel10" data-slide-to="11"></li>
+
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/IMG_0792.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/IMG_0850.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1020825.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1020873.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1020924.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='sup-ver-pics slideshow-pics'>
+                                <img src="pics/Bajan/ver/12928323_211590579220607_1623636266373398858_n.jpg" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1030161.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1030338.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='hor-pics slideshow-pics'>
+                                <img src="pics/Bajan/hor/P1040016.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bajan/ver/02_IMG_0963.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bajan/ver/13912550_283619128684418_2579259548821853276_n.jpg" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class='ver-pics slideshow-pics'>
+                                <img src="pics/Bajan/ver/P1030016.JPG" class='img-responsive' alt="Bajan">
+                            </div>
+                        </div>
+
+                    </div>
+                    <a class="left carousel-control" href="#myCarousel10" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel10" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Link Seite -->
+            <div class="col-xs-12 col-sm-8 content-container" id='links'>
+                <h2 id="bot-marg-header">Links</h2>
+                <div class="col-xs-12 col-sm-6 text-center">
+                    <h4 class="section-header">Andere Zuchstätten</h4>
+                    <a target="_blank" href="https://eurasier-vom-elseneck.de/">
+                        <img src="pics/Links/elseneck_logo.jpg" class='img-responsive link-pics' alt="">
+                    </a>
+                    <a target="_blank" href="http://www.eurasier-von-den-isarauen.de/">
+                        <img src="pics/Links/isarauen_logo.jpg" class='img-responsive link-pics' alt="">
+                    </a>
+                    <a target="_blank" href="https://www.perlenvoneurasier.de/">
+                        <img src="pics/Links/perlen_logo.png" class='img-responsive link-pics' alt="">
+                    </a>
+                    <a target="_blank" href="http://www.eurasier-vom-elfenspiegel.de">
+                        <img src="pics/Links/elfenspiegel_logo.jpg" class='img-responsive link-pics' alt="">
+                    </a>
+
+                </div>
+                <div class="col-xs-12 col-sm-6 text-center">
+                    <h4 class="section-header">Meine Buchtipps</h4>
+                    <h5 class='section-header'>Erhältlich im EFD-Shop</h5>
+                    <a target="_blank" href="http://www.eurasierwelpen.de/buch.htm">
+                        <img src="pics/Links/buch1.jpg" class='img-responsive link-pics buch-pics' alt="">
+                    </a>
+                    <a target="_blank" href="http://www.eurasierfreunde-deutschland.de/efdshop/efdshop.htm">
+                        <img src="pics/Links/buch2.jpg" class='img-responsive link-pics buch-pics' alt="">
+                    </a>
+                    <a target="_blank" href="http://www.eurasierfreunde-deutschland.de/efdshop/efdshop.htm">
+                        <img src="pics/Links/buch3.jpg" class='img-responsive link-pics buch-pics' alt="">
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- Kontakt Seite -->
+            <div class="col-xs-12 col-sm-8 content-container" id='kontakt'>
+                <h2 class="intro-header text-center">Kontakt</h2>
+                <!-- <h2 id="bot-marg-header">Kontakt</h2> -->
+                <div class="col-xs-12 col-sm-6 text-center">
+                    <p>
+                        Unser Zuhause ist
+                    </p>
+
+                    <p>
+                        Erlenstrasse 3
+                        <br> 95339 Neuenmarkt
+                    </p>
+                    <div style="width:85%; margin:auto" class="text-center">
+                        <img src="pics/Startseite/ver/eisenbahner2.jpeg" class="img-responsive" alt="">
+
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 text-center">
+                    <p>
+                        Sie können uns gerne per E-Mail kontaktieren. Kopieren Sie dafür entweder diese E-Mail Adresse
+                        <b>bettina.heinsch61@gmail.com</b> in ihr Postfach (gmail, webmail, etc.) oder benutzen Sie das Formular.
+                    </p>
+
+                    <!-- Subheadline for mobile devices to fill empty space -->
+                    <textarea name="betreff" id="betreff" cols="40" rows="2" placeholder="Betreff"></textarea>
+                    <textarea name="emailCont" id="emailCont" cols="40" rows="15" placeholder="Schreiben Sie hier Ihre Nachricht"></textarea>
+                    <a href="#" name="emailLink" id="emailLink">Nachricht senden</a>
+                </div>
+            </div>
+            <div class="hidden-xs col-sm-2" id='news'>
+
+                <h4 class="text-center section-header wichtig">Wir wünschen allen Besuchern unserer Homepage eine schöne und besinnliche Weihnachtszeit!</h4>
+                <div>
+                    <img src="pics/advent.png" class='img-responsive' alt="">
+                </div>
+                <p>
+                    <h4 class="text-center section-header">Geburstage</h4>
+                    <ul class="news-list">
+                        <li>Stella: 23.04.2010 </li>
+                        <li>Awadi: 14.09.2013 </li>
+                        <li>Bayoko: 26.08.2015 </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
     </div>
-    <div class='slides'>
-      <img src="pics/awadi-header.jpg" alt="Awadi" class='slideshow-pics'>
-      <!-- <h3>Awadi</h3> -->
+
+    <footer class="container text-center footer">
+        <div class="row">
+            <div>
+                <small>&copy; Heinsch 2017</small>
+            </div>
+            <div align='center'>
+                <img id='hit-counter' src='http://www.free-website-hit-counter.com/c.php?d=5&id=107448&s=2' border='0' title='Anzahl der Besucher'>
+                <br />
+            </div>
+
+        </div>
+
+    </footer>
+
+    <div id="overlay">
+        <div id="overlay-content">
+            <div id="close-overlay-bt">
+                <img src="pics/close_button.png" class="img-responsive" alt="Close Button">
+            </div>
+
+        </div>
+
     </div>
-    <div class='slides'>
-      <img src="pics/bayoko-header.jpg" alt="Bayoko" class='slideshow-pics'>
-      <!-- <h3>Bayoko</h3> -->
-    </div>
-    <div class='slides'>
-      <img src="pics/bank.jpeg" alt="Alle" class='slideshow-pics'>
-      <!-- <h3>Awadi, Stella, Bayoko (v.l.)</h3> -->
-    </div>
-
-  </div>
-
-  <div id='footer'>
-    <div>&copy; Heinsch 2017</div>
-    <div><a><img src='http://www.free-website-hit-counter.com/c.php?d=5&id=106200&s=2' border='0' title='website hit counter'></a><br /></div>
-    <!-- Start of SimpleHitCounter Code -->
-    <!-- <div align="center"><a href="http://www.marcleaningservices.com" target="_blank"><img src="http://simplehitcounter.com/hit.php?uid=2306460&f=65535&b=0" border="0" height="18" width="83" alt="carpet cleaning palm beach"></a><br><a href="http://www.marcleaningservices.com" target="_blank" style="text-decoration:none;">carpet cleaning palm beach</a></div> -->
-    <!-- End of SimpleHitCounter Code -->
-  </div>
-
-  <!-- <div class='overlay-layer'>
-
-      </div> -->
 
 </body>
 

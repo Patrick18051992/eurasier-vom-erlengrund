@@ -1,17 +1,330 @@
-.header {
-    /*margin: 0 auto 0 auto;*/
+body {
+    position: relative;
+    background-color: #f9fcde;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+.same-size {
+    height: inherit;
+}
+.navbar {
+    -webkit-backface-visibility: hidden;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar {
+      /* position: relative; */
+    }
+}
+#logo{
+    margin-top: 1.5em;
+    margin-bottom: 0.25em;
+    /* height: 5em; */
+}
+ /* center menu symbol  */
+.navbar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ueberschrift {
+    font-family: "Brush Script MT", cursive;
+    font-size: 3em;
+    font-weight: bold;
+    vertical-align: middle;
+    /*middle centred*/
+    /* display: table-cell; */
+}
+@media (min-width: 767px) {
+    #ueberschrift {
+        font-size: 3.5em
+    }
+}
+@media only screen and (min-width: 991px) {
+    #ueberschrift {
+        font-size: 5em
+    }
+}
+@media only screen and (min-width: 1200px) {
+    #ueberschrift {
+        font-size: 6em
+    }
+}
+/* nav links that opne sub links */
+.nav-appear {
+    cursor: default; 
+}
+/* visually indent the sub-tabs and hide them */
+.nav-appear-content {
+    padding-left: 1em;
+    display: none;
+}
+
+/* Increase the size of the navigation bar */
+.nav-tabs>li>a {
+    font-size: 1.2em;
+}
+@media (max-width: 766px) {
+    .affix {
+        position: relative;
+    }
+}
+/* decide where the fixed sidebar is displayed */
+@media only screen and (min-width: 767px) {
+.affix {
+    top: 10px;
+    z-index: 9999 !important;
+    width: 11%;
+}
+}
+/* Maybe not necessary */
+#news{
+    padding: 0;
+    /* margin-right: 0; */
+}
+.news-list{
+    /* list-style-position: inside; */
+    /* padding-left: auto;
+    padding-right: auto; */
+}
+#home-logo {
+    text-decoration: none;
+    color: inherit;    
+}
+
+.center-pic {
+    margin: auto;
+    display: block;
+}
+#efd-logo {
+    float: right;
+    margin-top: 2em;
+}
+.sticky {
+    position: fixed;
+    top:0;
+    left: 0;
+    width: inherit;
+    z-index: 100;
+}
+.navigation-padding {
+    padding-top: 3em;
+}
+
+#content {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+.navbar-collapse {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.section-header {
+    margin-top: 0;
+    margin-bottom: 0.75em;
+    /* font-family: "Brush Script MT", cursive; */
+    font-weight: bold;
     text-align: center;
+    
 }
-#bank {
+#intro-header {
+        margin-top: 0;
+        margin-bottom: 0.25em;
+        /* font-family: "Brush Script MT", cursive; */
+        font-weight: bold;
+        text-align: center;
+
+}
+.slides-text {
+    text-align: center;
+    margin-top: 0.25em;
+    margin-bottom: 0;
+}
+/* #first-pic {
     display: block;
-    margin: 0 auto 0 auto;
-    width: 400px;
-    height: auto;
-    margin-bottom: 0.5em;
+}
+.slides img:not(:first-child) {
+    display: none;
+  } */
+
+/* #slideshow .slides:not(:first-child) {
+    display: none;
+} */
+/* not needed after replacing thru bootstrap */
+.slides {
+    margin: auto;
+    cursor: pointer;
+    display: block; 
 }
 
+.slides :first-child {
+    /* display:block; */
+}
+
+.slideshow-pics {
+    cursor: pointer;
+}
+.my-sidebars {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: grey; /* Black background with opacity */
+    z-index: 200; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+    /* padding: 3em; */
+    box-sizing: border-box;
+    margin: auto;
+}
+#overlay-content {
+    width: 70%;
+    /* height: 80%; */
+    margin: auto;
+    display: block;
+    /* margin: 5em; */
+}
+
+.x {
+    position: absolute;
+    background: #f9fcde;
+    color: black;
+    font-weight: bold;
+    /*width: 1.5em;
+    height: 1.5em;*/
+    margin: auto;
+    top: 25px;
+    right: 25px;
+    text-align: center;
+    z-index: 200;
+    cursor: pointer;
+}
+
+/* .footer{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    margin-bottom: 0.25em;
+} */
+
+.footer {
+    padding: 0;
+    margin-bottom: 0.2em;
+    font-size: 0.9em;
+}
+
+#hit-counter {
+    height: 1.25em;
+}
+
+#mobile-subheadline {
+    margin-bottom: 1.5em;
+}
+
+#mid-row {
+    flex: 1;
+}
+
+#content {
+       width: 90%;
+       text-align: justify;
+    /* margin: auto; */
+    /* display: block; */
+}
 img {
+    image-orientation: from-image;
+}
+.hor-pics {
+    width: 90%;
+    margin: auto;
     display: block;
-    margin: 0 auto 0 auto;
+}
+.ver-pics {
+    margin: auto;
+    display: block;
+    width: 50%;
+}
+.sup-ver-pics {
+    margin: auto;
+    display: block;
+    width: 37.5%;
+}
+.quad-pics {
+    margin: auto;
+    display: block;
+    width: 70%;
+}
+.link-pics {
+    margin-bottom: 2em;
+}
+.buch-pics {
+    width: 40%;
+    display: inline-block;
+    margin-left:0.5em;
+    margin-right: 0.5em;
+    /* float: left; */
+}
 
+.intro {
+    padding: 1.15em 0.5em 1.15em 0.5em;
+    text-align: justify;
+    font-size: 1.05em;
+}
+.wichtig {
+    color: red;
+}
+.intro-overlay{
+    /* font-size: 1.2em; */
+    background-color: white;
+}
+
+/* kontakt */
+#emailLink {
+    display: block;
+}
+textarea {
+    overflow: auto;
+}
+
+/* mehrere auf einer Seite */
+.content-container {
+    display: none;
+}
+
+#close-overlay-bt{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    height: 40px;
+    width:40px;
+}
+
+.carousel-indicators {
+    bottom: -5px;
+}
+.carousel-caption {
+    padding-bottom: 0
+}
+#kontakt-list{
+    list-style-type: none;
+}
+#bot-marg-header{
+    margin-top: 0;
+    margin-bottom: 1.25em;
+    text-align: center;
+    font-weight: bold;
 }

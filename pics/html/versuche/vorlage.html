@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Eurasier-vom-Erlengrund</title>
+    <link rel="stylesheet" href="../css/versuch.css">
+    <script src="../js/jquery-latest.min.js"></script>
+    <script>
+            $(document).ready(function() {
+                $('.nav-body').hide();
+
+                $('.nav-head').hover(function() {
+
+                if (!$(this).next().hasClass('active')) {
+                    $('.nav-body').removeClass('active').slideUp('slow');
+                    $(this).next().addClass('active').slideDown('slow');
+                } else {
+                    $(this).next().removeClass('active').slideUp('fast');
+                }
+            });
+        });
+
+        </script>
+</head>
+
+<body>
+    <!-- Top -> Bild von den 3 plus eurasier vom erlengrund -->
+    <div id='banner-container'>
+        <h1>Eurasier-vom-Erlengrund</h1>
+        <img src="" alt="" id='stella-header' class='banner-img' >
+        <img src="" alt="" id='awadi-header' class='banner-img'>
+        <img src="" alt="" id='bayoko-heaser' class='banner-img'>
+    </div>
+    <div id='content-container'>
+        <nav id='nav-bar' class='side'>
+            <ul>
+                <li class='nav-element'><a class='nav-content' href="">Home</a></li>
+                <li class='nav-element'><a class='nav-content' href="">Stella</a></li>
+                <li class='nav-element'><a class='nav-content' href="">Awadi</a></li>
+                <li class='nav-element'><a class='nav-content' href="">Bayoko</a></li>
+
+                <!-- put it in a div -> otherwise hover stops when entering the lower ones -->
+                <li class='nav-element nav-head'><a class='nav-content' href="">A-Wurf</a></li>
+                <div class='nav-body'>
+                    <li class='nav-element'><a class='nav-content' href="">fhfmgmgm</a></li>
+                    <li class='nav-element'><a class='nav-content' href="">A-Wurf</a></li>
+                    <li class='nav-element'><a class='nav-content' href="">A-Wurf</a></li>
+                </div>
+                <li class='nav-element'><a class='nav-content' href="">B-Wurf</a></li>
+                <li class='nav-element'><a class='nav-content' href="">Eurasiertreffen</a></li>
+                <li class='nav-element'><a class='nav-content' href="">Sonsitges</a></li>
+            </ul>        
+        </nav>
+
+        <div id='content'>
+            <h3>Willkommen auf unserer Homepage</h3>
+            <!-- SLideshow -->
+            
+        </div>
+        <div id='news' class="side">
+            <h4>Neuigkeiten</h4>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test 1</title>
+    <script src="../js/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="../css/test.css">
+
+    <script>
+        $(document).ready(function () {
+            $('.index-container').hover(function () {
+                $(this).children(".toggle-content").toggle('slow');
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <div id='header'>
+        <a href="http://www.wwe.com"><img src="../pics/awadi-header.jpg" id='header-corner-left' alt=""></a>
+        <img src="../pics/bayoko-header.jpg" id='header-corner-right' alt="">
+        <img src="../pics/stella-header.jpg" id='header-middle' alt="">
+
+        <h1 id='headline'>Eurasier vom Erlengrund</h1>
+    </div>
+    <!-- doesnt make a difference, not sure why not aligning news at top -->
+    <div id='content-container'>
+        <nav id='navigation'>
+            <a class='nav-index index-container' href="">Home</a>
+            <div class='index-container'>
+                <a class='nav-index' href="">Meine Eurasier</a>
+                <div class='toggle-content'>
+                    <a class='nav-index' href="">Stella</a>
+                    <a class='nav-index' href="">Awadi</a>
+                    <a class='nav-index' href="">Bayoko</a>
+                </div>
+            </div>
+            <a class='nav-index index-container' href="">Vor dem Kauf</a>
+            <div class='index-container'>
+                <a class='nav-index' href="">A-Wurf</a>
+                <div class='toggle-content'>
+                    <a class='nav-index' href="">Awadi</a>
+                    <a class='nav-index' href="">Amori-Kwispel</a>
+                    <a class='nav-index' href="">Avalon</a>
+                    <a class='nav-index' href="">Achiko-Yakari</a>
+                    <a class='nav-index' href="">Astika</a>
+                </div>
+            </div>
+            <div class='index-container'>
+                <a class='nav-index' href="">B-Wurf</a>
+                <div class='toggle-content'>
+                    <a class='nav-index' href="">Bayoko</a>
+                    <a class='nav-index' href="">Baris</a>
+                    <a class='nav-index' href="">Bokar</a>
+                    <a class='nav-index' href="">Bajan</a>
+                </div>
+            </div>
+            <div class='index-container'>
+                <a class='nav-index' href="">Wurftreffen</a>
+                <div class='toggle-content'>
+                    <a class='nav-index' href="">A-Wurf</a>
+                    <a class='nav-index' href="">B-Wurf</a>
+                </div>
+            </div>
+            <a class='nav-index index-container' href="">Kontakt</a>
+        </nav>
+
+        <div id='content'>
+            <h2>Willkommen!</h2>
+        </div>
+        <!-- somehow not aligned -->
+        <div id='news'>
+            <h2>Neuigkeiten!</h2>
+        </div>
+    </div>
+    <footer id='footer'>
+             &#169; Heinsch 2017
+    </footer>
+    
+</body>
+</html>

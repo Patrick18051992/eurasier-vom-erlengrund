@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>slideshow</title>
+  <script src="../js/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="../css/slideshow-styles.css">
+  <script type="text/javascript">
+    function increase1(n) {
+      return n += 1;
+    }
+    $(document).ready(function() {
+      // creates a container of all slides, finds the visible one and gives the index
+      var current_slide_index = $('#slideshow-container').children(':visible').index();
+      var number_of_slides = $('#slideshow-container').children().length;
+      var interval;
+
+      $('#play').click(function() {
+        if (($(this).attr('data')) == 'pause') {
+          $(this).html('&#9658;');
+          clearInterval(interval);
+        } else {
+          $(this).html('&#10074;&#10074;').attr('data', "pause");
+          interval = setInterval(function() {
+            if (current_slide_index == (number_of_slides - 1)) {
+              current_slide_index = 0;
+            }
+
+            // otherwise incera by one
+            else {
+              current_slide_index += 1;
+            }
+            $('#slideshow-container').children().hide();
+            $('#slideshow-container').children(':eq(' + current_slide_index + ')').fadeIn();
+          }, 2000);
+        }
+      });
+
+
+      $('#next').click(function() {
+        // if the last slide then reset  index to zero
+        if (current_slide_index == (number_of_slides - 1)) {
+          current_slide_index = 0;
+        }
+
+        // otherwise incera by one
+        else {
+          current_slide_index += 1;
+        }
+        //Hide all slides in the slide-show container
+        $('#slideshow-container').children().hide();
+
+        // Show the slide with the computed index number
+        $('#slideshow-container').children(':eq(' + current_slide_index + ')').show();
+      });
+
+      $('#prev').click(function() {
+        // if the last slide then reset  index to zero
+        if (current_slide_index == 0) {
+          current_slide_index = (number_of_slides - 1);
+        }
+        // otherwise decrease by one
+        else {
+          current_slide_index -= 1;
+        }
+        //Hide all slides in the slide-show container
+        $('#slideshow-container').children().hide();
+
+        // Show the slide with the computed index number
+        $('#slideshow-container').children(':eq(' + current_slide_index + ')').show();
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h2>Home</h2>
+  <div id='slideshow-container'>
+
+    <div class='slides'>
+      <img src="../pics/stella-header.jpg" alt="Stella" class='slideshow-pics'>
+      <h3></h3>
+    </div>
+    <div class='slides'>
+      <img src="../pics/awadi-header.jpg" alt="Awadi" class='slideshow-pics'>
+      <h3></h3>
+    </div>
+    <div class='slides'>
+      <img src="../pics/bayoko-header.jpg" alt="Bayoko" class='slideshow-pics'>
+      <h3></h3>
+    </div>
+    <div class='slides'>
+      <img src="../pics/bank.jpeg" alt="Alle" class='slideshow-pics'>
+      <h3></h3>
+    </div>
+
+  </div>
+
+  <div id='button-container'>
+    <!-- Maybe use google icons, include with spreadsheet, better than this -->
+    <button class="slideshow-buttons" id="prev">&#10074;&#9668;</button>
+    <button class="slideshow-buttons" id="play" data='play'>&#9658;</button>
+    <button class="slideshow-buttons" id="next">&#9658;&#10074;</button>
+  </div>
+</body>
+
+</html>

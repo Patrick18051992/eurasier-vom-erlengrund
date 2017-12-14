@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Eurasier vom Erlengrund</title>
+  <link rel="stylesheet" href="../css/soon - Copia.css">
+  <script src="../js/jquery-latest.min.js"></script>
+  <script>
+    function nextSlide() {
+      if (current_slide_index == (number_of_slides - 1)) {
+        current_slide_index = 0;
+      } else {
+        current_slide_index += 1;
+      }
+      slideshow.children().hide();
+      slideshow.children(':eq(' + current_slide_index + ')').fadeIn();
+    }
+
+    function previousSlide() {
+      if (current_slide_index == 0) {
+        current_slide_index = (number_of_slides - 1);
+      }
+      // otherwise decrease by one
+      else {
+        current_slide_index -= 1;
+      }
+      slideshow.children().hide();
+      slideshow.children(':eq(' + current_slide_index + ')').fadeIn('slow');
+    }
+
+
+    $(document).ready(function() {
+      $('#overlay-layer').hide();
+      // creates a container of all slides, finds the visible one and gives the index
+      current_slide_index = $('#slideshow-container').children(':visible').index();
+      number_of_slides = $('#slideshow-container').children().length;
+      slideshow = $('#slideshow-container');
+      // have the slideshow running from the beginning
+      var interval = setInterval(nextSlide, 3000);
+      var close = $('<button class="x">X</button>');
+
+
+      $('.slideshow-pics').click(function() {
+        $(this).addClass('overlay-pic').removeClass('slideshow-pics');
+        $('#overlay-layer').show();
+
+        clearInterval(interval);
+      });
+
+      $('#x').click(function(){
+        $('#overlay-layer').hide();
+        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+        interval = setInterval(nextSlide, 3000);
+
+      });
+      // Because the close button is genereated dynamically, this approach to access it has to be done
+      // $('.slides').on('click', '.x', function() {
+      //   $('.slides').removeClass('overlay-layer');
+      //   $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+      //   $('.x').remove();
+      //   $('.pic-control').remove();
+      //   interval = setInterval(nextSlide, 3000);
+      // });
+
+      $(document).keyup(function(e) {
+        if (e.keyCode === 27) {
+          $('.slides').removeClass('overlay-layer');
+          $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+          $('.x').remove();
+          $('.pic-control').remove();
+          interval = setInterval(nextSlide, 3000);
+
+        }
+      });
+
+      // include a flag that allows to only use the arrows whenin overlay mode
+      $('.slides').on('click', '#previous', function() {
+        $('.slides').removeClass('overlay-layer');
+        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+        $('.x').remove();
+
+        previousSlide();
+
+        $('.slideshow-pics').parent().addClass('overlay-layer');
+        $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before('<img src="../pics/previous.png" id="previous" class="pic-control">').after('<img src="../pics/next.png" id="next" class="pic-control">');
+
+      });
+
+      // $(document).keyup(function(e) {
+      //   if (e.keyCode === 37) {
+      //     $('.slides').removeClass('overlay-layer');
+      //     $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+      //     $('.x').remove();
+      //
+      //     previousSlide();
+      //     $('.slideshow-pics').parent().addClass('overlay-layer');
+      //     $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before('<img src="../pics/previous.png" id="previous">').after('<img src="../pics/next.png" id="next">');
+      //
+      //   }
+      // });
+
+
+      $('.slides').on('click', '#next', function() {
+        $('.slides').removeClass('overlay-layer');
+        $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+        $('.x').remove();
+
+        nextSlide();
+        $('.slideshow-pics').parent().addClass('overlay-layer');
+        $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before('<img src="../pics/previous.png" id="previous" class="pic-control">').after('<img src="../pics/next.png" id="next" class="pic-control">');
+
+      });
+
+      // $(document).keyup(function(e) {
+      //   if (e.keyCode === 39) {
+      //     $('.slides').removeClass('overlay-layer');
+      //     $('.overlay-pic').addClass('slideshow-pics').removeClass('overlay-pic');
+      //     $('.x').remove();
+      //
+      //     nextSlide();
+      //     $('.slideshow-pics').parent().addClass('overlay-layer');
+      //     $('.slideshow-pics').addClass('overlay-pic').removeClass('slideshow-pics').after(close).before('<img src="../pics/previous.png" id="previous">').after('<img src="../pics/next.png" id="next">');
+      //
+      //   }
+      // });
+
+
+    });
+  </script>
+</head>
+
+<body>
+  <header id="header">
+    <div class='left-col'>
+      <img src="../pics/logo.jpg" class='pic' alt="Eurasierzuechter Logo">
+    </div>
+    <div class="middle-col">
+      <h1 id='top-headline'>Eurasier vom Erlengrund</h1>
+    </div>
+    <div class="right-col">
+      <img src="../pics/efd_logo.png" alt="Eurasierfreunde Deutschland Logo" class="pic">
+    </div>
+  </header>
+
+  <h2 id="info-header">Bald ist es soweit!!!</h2>
+
+  <div id='slideshow-container'>
+
+    <div class='slides'>
+      <img src="../pics/stella-header.jpg" alt="Stella" class='slideshow-pics'>
+      <!-- <h3>Stella</h3> -->
+    </div>
+    <div class='slides'>
+      <img src="../pics/awadi-header.jpg" alt="Awadi" class='slideshow-pics'>
+      <!-- <h3>Awadi</h3> -->
+    </div>
+    <div class='slides'>
+      <img src="../pics/bayoko-header.jpg" alt="Bayoko" class='slideshow-pics'>
+      <!-- <h3>Bayoko</h3> -->
+    </div>
+    <div class='slides'>
+      <img src="../pics/bank.jpeg" alt="Alle" class='slideshow-pics'>
+      <!-- <h3>Awadi, Stella, Bayoko (v.l.)</h3> -->
+    </div>
+
+  </div>
+
+  <div id='footer'>
+    <div>&copy; Heinsch 2017</div>
+    <div><a><img src='http://www.free-website-hit-counter.com/c.php?d=5&id=106200&s=2' border='0' title='free website hit counter'></a><br /></div>
+    <!-- Start of SimpleHitCounter Code -->
+    <!-- <div align="center"><a href="http://www.marcleaningservices.com" target="_blank"><img src="http://simplehitcounter.com/hit.php?uid=2306460&f=65535&b=0" border="0" height="18" width="83" alt="carpet cleaning palm beach"></a><br><a href="http://www.marcleaningservices.com" target="_blank" style="text-decoration:none;">carpet cleaning palm beach</a></div> -->
+    <!-- End of SimpleHitCounter Code -->
+  </div>
+
+  <div id='overlay-layer'>
+    <img src="../pics/previous.png" id="previous" class="pic-control">
+    <button id="x">X</button>
+    <img src="../pics/next.png" id="next" class="pic-control">
+  </div>
+
+</body>
+
+</html>

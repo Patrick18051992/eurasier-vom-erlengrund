@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eurasier-vom-Erlengrund</title>
+    <script src="../../js/jquery-latest.min.js"></script>
+    <link rel="stylesheet" href="../../css/navigation.css">
+
+    <script>
+        $(document).ready(function(){
+            $('.nav-index').click(function(){
+                $('.toggle-content').slideUp('slow');
+                $(this).siblings(".toggle-content").toggle('slow');
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <nav id='navigation'>
+        <a class='nav-index index-container' href="">Home</a>
+        <div class='index-container'>
+            <a class='nav-index'>Meine Eurasier</a>
+            <div class='toggle-content'>
+                <a class='nav-index' href="">Stella</a>
+                <a class='nav-index' href="">Awadi</a>
+                <a class='nav-index' href="">Bayoko</a>
+            </div>
+        </div>
+        <a class='nav-index index-container' href="">Vor dem Kauf</a>
+        <div class='index-container'>
+            <a class='nav-index'>A-Wurf</a>
+            <div class='toggle-content'>
+                <a class='nav-index' href="">Awadi</a>
+                <a class='nav-index' href="">Amori-Kwispel</a>
+                <a class='nav-index' href="">Avalon</a>
+                <a class='nav-index' href="">Achiko-Yakari</a>
+                <a class='nav-index' href="">Astika</a>
+            </div>
+        </div>
+        <div class='index-container'>
+            <a class='nav-index'>B-Wurf</a>
+            <div class='toggle-content'>
+                <a class='nav-index' href="">Bayoko</a>
+                <a class='nav-index' href="">Baris</a>
+                <a class='nav-index' href="">Bokar</a>
+                <a class='nav-index' href="">Bajan</a>
+            </div>
+        </div>
+        <div class='index-container'>
+            <a class='nav-index'>Wurftreffen</a>
+            <div class='toggle-content'>
+                <a class='nav-index' href="">A-Wurf</a>
+                <a class='nav-index' href="">B-Wurf</a>
+            </div>
+        </div>
+        <a class='nav-index index-container' href="">Kontakt</a>
+    </nav>
+
+</body>
+</html>

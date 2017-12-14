@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="../js/jquery-latest.min.js"></script>
+    <title>kd</title>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.toggle-content').hide();
+
+        $('.header').click(function() {
+          $('.toggle-content').hide();
+          $(this).next('.toggle-content').slideDown();
+        })
+      });
+    </script>
+  </head>
+
+  <body>
+    <a class='nav-item' href="http://www.t-online.de">blbalalalalala</a>
+    <div>
+      <a class='header'>click me to toggle</a>
+      <div class='toggle-content'><a class='nav-item' href="http://www.wwe.com">blbalalalalala</a></div>
+    </div>
+    <div>
+      <a class='header'>click me to toggle</a>
+      <div class='toggle-content'>blbalalalalala</div>
+    </div>
+    <div>
+      <a class='header'>click me to toggle</a>
+      <div class='toggle-content'>blbalalalalala</div>
+    </div>
+    <a class='nav-item' href="http://www.dallas.com">blbalalalalala</a>
+    <div>
+      <a class='header'>click me to toggle</a>
+      <div class='toggle-content'>blbalalalalala</div>
+    </div>
+  </body>
+</html>
