@@ -328,3 +328,16 @@ textarea {
     text-align: center;
     font-weight: bold;
 }
+
+.kontakt-header {
+    margin-top: 0;
+}
+
+#kontakt-name {
+    color: orange;
+    margin-bottom: 0.25em;
+}
+
+.carousel-indicators li {
+    background-color: orange;
+}
