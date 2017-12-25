@@ -6405,8 +6405,8 @@ button.close {
   margin: 1px;
   text-indent: -999px;
   cursor: pointer;
-  background-color: #000 \9;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: orange \9;
+  background-color: orange;
   border: 1px solid #fff;
   border-radius: 10px;
 }
