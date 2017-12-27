@@ -341,3 +341,35 @@ textarea {
 .carousel-indicators li {
     background-color: orange;
 }
+
+.glyphicon {
+    background-color: orange;
+}
+
+.steckbrief-wrapper {
+    height: auto;
+    margin-top: 3.5em;
+    /* margin-bottom: 5em; */
+}
+
+.steckbrief {
+    margin-bottom: 3em;
+}
+
+.steckbrief table tr td {
+    vertical-align: top;
+    padding-bottom: 0.5em;
+}
+.wurf-caption-container {
+    margin: auto;
+    width: 90%;
+    /* text-align: left; */
+    left: 0;
+    right: 0;
+}
+ .b-wurf-caption {
+     word-spacing: 5px;
+     text-align: right;
+     margin-right: 10%;
+
+ }
