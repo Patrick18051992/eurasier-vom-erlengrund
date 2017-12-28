@@ -280,7 +280,7 @@ img {
 }
 
 .intro {
-    padding: 1.15em 0.5em 1.15em 0.5em;
+    padding: 1.15em 0.5em 1.75em 0.5em;
     text-align: justify;
     font-size: 1.05em;
 }
@@ -344,6 +344,14 @@ textarea {
 
 .glyphicon {
     background-color: orange;
+}
+
+.glyphicon-chevron-left {
+    margin-left: -1.35em !important;
+}
+
+.glyphicon-chevron-right {
+    margin-right: -1.35em !important;
 }
 
 .steckbrief-wrapper {
